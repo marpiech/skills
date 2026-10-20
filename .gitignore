@@ -1,0 +1,24 @@
+# Whitelist: only publish the skills themselves plus the repo's front matter.
+# Everything else (CLAUDE.md, local notes, eval workspaces, secrets) stays local.
+/*
+!/.gitignore
+!/README.md
+!/LICENSE
+!/skills/
+
+# Never publish these, even inside skills/
+CLAUDE.md
+CLAUDE.local.md
+MEMORY.md
+.claude/
+*-workspace/
+iteration-*/
+.env
+.env.*
+*.pem
+*.key
+*credentials*.json
+*service-account*.json
+__pycache__/
+*.pyc
+.DS_Store
