@@ -269,6 +269,9 @@ intentionally omitted" in the adapter so SYNC/AUDIT do not re-propose them.
 Generic learnings about this skill, newest first. Project-specific learnings go to the
 project's adapter, never here. When a learning changes a step, edit the step too.
 
+- 2026-10-21 — first real audit: deep docs quote regexes such as `[a-z]([-a-z0-9]*)` that
+  look like markdown links; the link checker now strips fenced blocks and inline code
+  before extracting links. Treat any DEAD-LINK whose target is not a path as a checker bug.
 - 2026-10-20 — initial generic version, modelled on a production CLAUDE.md that kept
   rules in the bold-imperative + bullets + check shape and split knowledge into
   always-loaded / deep-docs / todos / memory tiers with per-file character budgets.

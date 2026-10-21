@@ -38,8 +38,10 @@ check_size() {
 check_links() {
   local f="$1" d
   d=$(dirname "$f")
-  # [text](target) where target is relative (no scheme, no leading #)
-  grep -oE '\]\([^)#][^)]*\)' "$f" | sed -E 's/^\]\(//; s/\)$//; s/#.*$//; s/[[:space:]].*$//' \
+  # [text](target) where target is relative (no scheme, no leading #). Fenced blocks and
+  # `inline code` are stripped first — regexes like `[a-z]([-a-z0-9]*)` are not links.
+  awk '/^[[:space:]]*(```|~~~)/ { fence = !fence; next } !fence' "$f" | sed -E 's/`[^`]*`//g' \
+    | grep -oE '\]\([^)#][^)]*\)' | sed -E 's/^\]\(//; s/\)$//; s/#.*$//; s/[[:space:]].*$//' \
     | grep -vE '^[a-z]+:' | sort -u | while read -r link; do
       [[ -z "$link" ]] && continue
       [[ -e "$d/$link" ]] || echo "DEAD-LINK     $f → $link"
