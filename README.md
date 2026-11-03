@@ -9,6 +9,8 @@ specific project through a small adapter file — no project knowledge lives in 
 | skill | what it does | typical use |
 |-------|--------------|-------------|
 | [marpiech-init](skills/marpiech-init/SKILL.md) | drafts and maintains a project's CLAUDE.md: rules, workflow, gates, verified commands, and a generated "which skill when" block; creates adapters; audits size/links/secrets | once per project, then `sync` after adding skills |
+| [marpiech-ideate](skills/marpiech-ideate/SKILL.md) | idea → alignment rounds → SPEC.md → blind + second-opinion review → local prototype outside the repo, iterated until "v-ready" | new product area or UI whose design is still open |
+| [marpiech-myplan](skills/marpiech-myplan/SKILL.md) | plan mode, 3 alignment rounds, 3 approaches, independently reviewed plan, then ticket + failing tests first + implement + audit + deliver | substantial change with no ticket yet |
 | [marpiech-memory](skills/marpiech-memory/SKILL.md) | grep-based `MEMORY.md` files next to the code: decisions, gotchas, rejected alternatives | read at session start, update at session end |
 
 ## Install
