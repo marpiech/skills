@@ -189,6 +189,8 @@ and present again. No rollout without explicit approval.
    not-found, a missing element, an assertion on new behaviour) — not because of an
    import error or broken fixture. Save the failure output.
 4. IF a new test passes before implementation → the test is wrong; fix the test first.
+5. IF /marpiech-tests is installed → follow its B. TESTS FIRST mode for steps 2–4, and
+   run its revert check (`prove-fails`) in 11f.
 
 ### 11c. Implement
 

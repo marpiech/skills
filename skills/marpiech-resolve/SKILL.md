@@ -241,7 +241,9 @@ not done and fix the tool, don't count it. Fold confirmed findings back (→ Pha
 
 ## Phase 8 — Test
 
-Run the route's test gate (adapter; default: the full suite from CLAUDE.md). On
+IF /marpiech-tests is installed → use it for the new tests (cover or regression mode,
+including its revert check) and its run-and-report rules. Run the route's test gate
+(adapter; default: the full suite from CLAUDE.md). On
 failure: read → diagnose → fix the code (the test only if its assertion is wrong) →
 re-run. Skipped tests (missing data/env) are noted, not chased. Pre-existing failures:
 prove they fail on the base commit too (a detached worktree of the base is the cheapest
