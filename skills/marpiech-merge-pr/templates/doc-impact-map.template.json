@@ -1,0 +1,16 @@
+{
+  "_comment": "Copy to <project>/.claude/doc-impact-map.json. 'match' is a path prefix. Remove docs_repo if the docs live in this repository; with docs_repo set, a rule is open when a doc page is older than the PR.",
+  "docs_repo": "owner/docs-repository",
+  "rules": [
+    {
+      "match": "src/api/",
+      "doc_pages": ["reference/api.md"],
+      "note": "public API reference"
+    },
+    {
+      "match": "cli/commands/",
+      "doc_pages": ["cli/commands.md"],
+      "note": "CLI command reference"
+    }
+  ]
+}
