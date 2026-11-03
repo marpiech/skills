@@ -1,0 +1,92 @@
+# Copy to .github/workflows/release.yml and replace every <PLACEHOLDER>.
+# Release = push a tag v<version> on the bumped commit. Gates run first; publishing uses
+# PyPI Trusted Publishing (OIDC) — register this repo + "release.yml" + environment "pypi"
+# as a trusted publisher on the index. No token is stored anywhere.
+name: release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Build and test only - publish nothing'
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0          # anything derived from git history needs the full history
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '<OLDEST_PYTHON>'     # gate on the oldest supported runtime
+
+      - name: Install
+        run: |
+          python -m pip install --upgrade pip
+          pip install .<TEST_EXTRAS>            # e.g. ".[test]"
+
+      - name: Version must match the tag
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: |
+          TAG="${GITHUB_REF_NAME#v}"
+          PKG=$(python -c "import importlib.metadata as m; print(m.version('<DIST_NAME>'))")
+          echo "tag=$TAG package=$PKG"
+          test "$TAG" = "$PKG" || { echo "::error::tag $TAG != package version $PKG"; exit 1; }
+
+      - name: Project release gates
+        run: |
+          <GATE_COMMANDS>                       # e.g. manifest / checksum checks; point them at the
+                                                # repository copy, not the installed one
+
+      - name: Test suite
+        run: <TEST_COMMAND>
+
+  build:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install build twine
+      - run: python -m build
+      - run: twine check dist/*
+      - name: Clean install from the wheel (oldest Python)
+        run: |
+          docker run --rm -v "$PWD/dist:/dist:ro" python:<OLDEST_PYTHON>-slim sh -c '
+            pip install --no-cache-dir /dist/*.whl &&
+            cd /tmp && python -c "import <IMPORT_NAME>" && <CLI_SMOKE>'
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/
+
+  pypi:
+    needs: build
+    if: startsWith(github.ref, 'refs/tags/v') && inputs.dry_run != true
+    runs-on: ubuntu-latest
+    environment: pypi
+    permissions:
+      # A job-level block REPLACES the defaults: list contents: read explicitly, or
+      # checkout/artifact steps fail with a misleading "repository not found".
+      contents: read
+      id-token: write             # OIDC for Trusted Publishing
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist/
+      - uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          skip-existing: true     # a re-run succeeds once files exist; it never overwrites
