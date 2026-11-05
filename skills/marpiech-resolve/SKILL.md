@@ -228,7 +228,8 @@ After the last round: final plan → exit plan mode → approval.
 
 IF `/marpiech-audit` is installed → run it scoped to the touched components; ELSE
 `/code-review` on the diff. Fix findings caused by this ticket; note pre-existing ones.
-Skip for trivial changes.
+IF the change touches templates, components or CSS AND `/marpiech-uidesign` is installed →
+also run its REVIEW on the diff (static checks + render check). Skip for trivial changes.
 
 ## Phase 7.5 — Second opinion (optional)
 

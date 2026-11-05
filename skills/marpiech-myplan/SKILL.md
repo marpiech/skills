@@ -209,7 +209,9 @@ behaviour with the user.
 
 IF `/marpiech-audit` is installed → run it scoped to the touched files; ELSE run
 `/code-review` on the diff. Fix findings caused by this change. Note pre-existing
-issues in the final report; do not fold their fixes into this change.
+issues in the final report; do not fold their fixes into this change. IF the change
+touches templates, components or CSS AND `/marpiech-uidesign` is installed → also run its
+REVIEW on the diff.
 
 ### 11f. Prove the failing tests now pass
 

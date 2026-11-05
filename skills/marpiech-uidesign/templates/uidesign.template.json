@@ -1,0 +1,14 @@
+{
+  "_comment": "Copy to <project>/.claude/uidesign.json; `uidesign.py sources` prints a filled draft. This config tells the checker WHERE the sources of truth are; it is not itself a source of design values. Remove keys you do not need.",
+  "token_files": ["libs/ui/static/tokens.css"],
+  "dark_selectors": ["[data-theme=\"dark\"]"],
+  "component_dirs": ["libs/ui/templates/components"],
+  "formatter_files": ["libs/ui/filters.py"],
+  "palette": ["--blue-*", "--grey-*", "--white", "--black"],
+  "raw_elements": {"button": "<button\\b", "data_table": "<table\\b"},
+  "deprecated": [],
+  "contrast_pairs": ["--text-primary:--surface", "--text-muted:--surface", "--text-muted:--surface-alt", "--link:--surface"],
+  "exclude": ["emails/", "pdf_templates/"],
+  "severity": {"MONO": "info"},
+  "allow": {"GRADIENT": ["*/charts.css"]}
+}
