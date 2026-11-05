@@ -164,6 +164,51 @@
   if (hues.size > 6) add("CHART-HUES", "FAIL", "more than six hues in charts — one hue per chart, status colours for status", document.body, hues.size + " hue buckets");
   else if (hues.size > 4) add("CHART-HUES", "WARN", "more than four hues in charts", document.body, hues.size + " hue buckets");
 
+  // motion: endless animations mean "live"; they must stop under reduced motion
+  const endless = [...document.querySelectorAll("body *")].filter((el) => {
+    const cs = getComputedStyle(el);
+    return cs.animationName !== "none" && cs.animationIterationCount === "infinite" && visible(el) &&
+      !el.closest("[aria-busy=true],[role=progressbar],.spinner,.loading");
+  });
+  if (endless.length && matchMedia("(prefers-reduced-motion: reduce)").matches)
+    add("MOTION", "FAIL", "endless animation still running under prefers-reduced-motion", endless[0], endless.length + " elements");
+  else if (endless.length > 2)
+    add("MOTION", "WARN", "more than two endlessly animated indicators — motion should mark only truly live data", endless[0], endless.length + " elements");
+
+  // charts need a text equivalent (accessible name / caption / table view)
+  for (const ch of document.querySelectorAll("svg, canvas")) {
+    if (!visible(ch) || ch.parentElement.closest("svg")) continue;
+    const r = ch.getBoundingClientRect();
+    const marks = ch.tagName.toLowerCase() === "svg" ? ch.querySelectorAll("path,rect,circle,line,polyline,polygon").length : 99;
+    if (r.width < 120 || r.height < 60 || marks < 6) continue; // icons and decorations
+    const fig = ch.closest("figure");
+    const named = ch.getAttribute("aria-label") || ch.getAttribute("aria-labelledby") || ch.getAttribute("aria-describedby") ||
+      (ch.querySelector && ch.querySelector(":scope > title")) || (fig && fig.querySelector("figcaption")) ||
+      ch.getAttribute("aria-hidden") === "true";
+    if (!named) add("CHART-A11Y", "WARN", "a chart without a text equivalent (aria-label / figcaption with the finding, or a table view)", ch,
+      `${Math.round(r.width)}x${Math.round(r.height)}`);
+  }
+
+  // a dark-looking page must declare color-scheme: dark (native controls, scrollbars)
+  const pageBg = bgOf(document.body);
+  if (pageBg && lum(pageBg) < 0.2 && !/dark/.test(getComputedStyle(document.documentElement).colorScheme || ""))
+    add("COLOR-SCHEME", "WARN", "dark page without `color-scheme: dark` — scrollbars and native controls stay light", document.documentElement,
+      getComputedStyle(document.documentElement).colorScheme || "normal");
+
+  // one density tier per screen
+  const tiers = {};
+  for (const t of document.querySelectorAll("table")) {
+    if (!visible(t) || !t.tBodies.length) continue;
+    const hs = [...t.tBodies[0].rows].slice(0, 12).filter(visible).map((rw) => rw.getBoundingClientRect().height).sort((a, b) => a - b);
+    if (hs.length < 3) continue;
+    const med = hs[Math.floor(hs.length / 2)];
+    const tier = med <= 40 ? "compact" : med <= 52 ? "standard" : "comfortable";
+    (tiers[tier] = tiers[tier] || []).push(`${sel(t)}:${Math.round(med)}px`);
+  }
+  if (Object.keys(tiers).length > 1)
+    add("ROW-DENSITY", "INFO", "tables on this screen use different density tiers — one tier per screen", document.body,
+      Object.entries(tiers).map(([k, v]) => `${k}(${v.length})`).join(" "));
+
   // CSS variables referenced in same-origin stylesheets but unresolved at :root
   const rootCS = getComputedStyle(document.documentElement);
   const unresolved = new Set();

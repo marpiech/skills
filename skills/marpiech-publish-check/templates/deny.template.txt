@@ -1,0 +1,22 @@
+# Private deny list for marpiech-publish-check.
+# Keep this file OUTSIDE the repository it protects, e.g.
+#   ~/.config/marpiech-publish-check/deny.txt   (or point $PUBLISH_DENY_FILE at it)
+# One term per line, matched case-insensitively on word boundaries.
+# Lines starting with `re:` are regular expressions. `#` starts a comment.
+
+# organisation, products, teams
+Acme Corp
+acmecorp
+
+# customers and partners
+Example Customer Ltd
+
+# people other than the intended public author
+Alex Example
+
+# internal domains, hosts, clusters, cloud ids, buckets, databases
+acme-internal.example
+re:acme-(prod|staging|preprod)-[a-z0-9-]+
+
+# sibling/source project names
+acme-legacy-monolith

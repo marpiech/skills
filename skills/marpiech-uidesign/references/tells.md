@@ -29,6 +29,11 @@ The probe (`scripts/probe.js`) and `uidesign.py lint` detect the ones marked ⚙
 | Neon on dark, glowing borders, glass, backdrop blur ⚙ (gradient/shadow) | True neutral darks, lightness steps, colour on data |
 | An illustration plus "No data yet" in an empty chart | The zero line drawn and one sentence in the frame |
 | Monospace as a "technical" costume for IDs and labels ⚙ | Text face with tabular figures; mono for code/sequences |
+| A coloured top or left stripe on every card | A stripe only where it marks status, on the item that has it |
+| Small uppercase tracked "eyebrow" labels over every section | Sentence-case section titles; no eyebrow |
+| Pulsing "live" dots on data that polls or loads once ⚙ (motion) | A freshness stamp; motion only for truly live data |
+| Glow or coloured box-shadows, glass panels ⚙ (shadow) | Tone steps and 1px borders |
+| Chart titles that only name the measure ("Revenue") | A title that states the finding; the measure in the subtitle |
 
 **Removal is not enough.** A screen with every tell removed and nothing in their place is a tidy
 template. What fills the space is the product: its own data at real size, the screen's one question

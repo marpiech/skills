@@ -90,7 +90,10 @@ proxies that forward a client-supplied resource id to another service, authoriza
 that silently passes when a field is missing (fail-open), "has a project in context"
 mistaken for "may access that project", permissions enforced only in templates,
 twin endpoints (HTML vs API) that check different permissions, enforcement switches
-left in log mode in every deployed environment.
+left in log mode in every deployed environment. This audit checks the project's rules; for an
+adversarial review (attacker model, source → sink verification, CI/agent workflows, supply
+chain) IF `/marpiech-security` is installed → recommend it in the report rather than
+expanding this step.
 
 ### Step 5 — Triage every hit
 

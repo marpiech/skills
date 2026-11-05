@@ -258,6 +258,16 @@ Example for a fictional project:
 Generic learnings, newest first. Project-specific learnings go to the project's adapter; design
 decisions go to the project's design-system decision log.
 
+- 2026-11-05 — dashboard rules extended from a survey of the most-starred design skills and
+  established data-viz guidance (design-system data-viz pages, dashboard best-practice guides,
+  web interface guidelines, a study that scored ~1,600 launched sites for generated-design
+  patterns): Q7 filter scope, K6 metric definitions, C10 finding titles, C11 text
+  equivalents, C12 render by data size, C13 time zones, no dual axes, shared scales for small
+  multiples, legend behaviour, S7 motion, S8 view state in the URL, P8–P10 chart palettes,
+  colour-vision safety and re-tuned dark charts, one density tier per screen, loader timing.
+  Probe gained MOTION, CHART-A11Y, COLOR-SCHEME and ROW-DENSITY; the render check adds a
+  reduced-motion pass. All rules re-expressed, none copied.
+
 - 2026-11-05 — initial generic version. Review rules distilled (rewritten, not copied) from
   taste-skill v2.1's study of real app screens (Leonxlnx/taste-skill, MIT) and the Operate-mode /
   audit structure of Impeccable (pbakaus/impeccable, Apache-2.0); single-source-of-truth method and

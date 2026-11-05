@@ -211,7 +211,9 @@ IF `/marpiech-audit` is installed → run it scoped to the touched files; ELSE r
 `/code-review` on the diff. Fix findings caused by this change. Note pre-existing
 issues in the final report; do not fold their fixes into this change. IF the change
 touches templates, components or CSS AND `/marpiech-uidesign` is installed → also run its
-REVIEW on the diff.
+REVIEW on the diff. IF it touches authentication, permissions, sessions, crypto, file
+handling, rendering of user data, CI workflows or dependency manifests AND
+`/marpiech-security` is installed → also run its DIFF review.
 
 ### 11f. Prove the failing tests now pass
 

@@ -24,8 +24,9 @@
       Character budget per file (default 20000) — for always-loaded agent docs.
 
   docs-check.py style  DIR... [--max-words N] [--reject 'bad=good' ...] [--british]
-      Advisory prose lint: inflated words, sentences longer than N words (default 25),
-      rejected terms from the project's terminology table, British spellings.
+      Advisory prose lint: inflated words, stock/filler phrases typical of generated
+      text (SLOP), sentences longer than N words (default 25), rejected terms from the
+      project's terminology table, British spellings.
 
 Exit codes: 0 = nothing found, 1 = findings, 2 = usage / environment problem.
 """
@@ -45,6 +46,15 @@ INFLATED = re.compile(
     r"endeavou?r|ascertain|numerous|aforementioned|herein|therein|whilst|amongst|prior to|"
     r"subsequent to|in order to|approximately|a number of|seamless(ly)?|powerful|robust|"
     r"intuitive|enterprise-grade)\b", re.I)
+# Patterns typical of machine-generated or padded prose (advisory). Kept short and literal.
+SLOP = re.compile(
+    r"\b(delve[sd]?|delving|tapestry|testament to|in today's (fast-paced|digital)|ever-evolving|"
+    r"game[- ]changer|unlock(s|ing)? the (power|potential)|elevate[sd]? your|navigate the complexit\w*|"
+    r"it'?s (important|worth) (to note|noting)|whether you'?re a|look no further|"
+    r"in (conclusion|summary),|at the end of the day|embark(s|ed)? on|harness(es|ed|ing)? the power|"
+    r"cutting-edge|best-in-class|world-class|revolutioni[sz]\w*|supercharge\w*|effortless(ly)?|"
+    r"not (just|only) [^.,;]{1,40}, but|let'?s dive in|dive (deep|into)|rest assured|"
+    r"plays? a (crucial|pivotal|vital) role|a (crucial|pivotal) (role|step))\b", re.I)
 BRITISH = re.compile(
     r"\b(analys(e|ed|ing)|organis\w*|summaris\w*|optimis\w*|customis\w*|behaviour|colour|"
     r"licence|centre|catalogue|labelled|fulfil|enrol|tumour)\b", re.I)
@@ -230,6 +240,9 @@ def cmd_style(a):
         for i, line in enumerate(plain.splitlines(), 1):
             for m in INFLATED.finditer(line):
                 print(f"WORD   {f}:{i}: '{m.group(0)}' — use the plain word")
+                hits += 1
+            for m in SLOP.finditer(line):
+                print(f"SLOP   {f}:{i}: '{m.group(0)}' — filler or stock phrase; say the fact")
                 hits += 1
             if a.british:
                 for m in BRITISH.finditer(line):

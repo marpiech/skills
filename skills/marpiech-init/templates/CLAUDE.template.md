@@ -14,7 +14,27 @@ dives live in `<DEEP_DOCS_DIR>/`; active work lives in `<TODOS_DIR>/`.
 **Ask, don't guess.**
 
 - Ask clarification questions before implementing when scope, approach or details are uncertain
+- State the assumptions you are making; when a request has several readings, name them and ask
 - Proceed with implementation only when requirements are clear
+
+**Simplest change that solves it.**
+
+- No features, options, abstractions or error handling for cases nobody asked for or that cannot happen
+- One-use code stays inline; suggest the simpler approach when the request implies a complex one
+- Check: would a senior reviewer call the diff over-built? If yes, cut it down
+
+**Surgical changes.**
+
+- Touch only what the task needs: no drive-by refactors, renames, reformatting or comment rewrites
+- Match the surrounding style; mention unrelated problems (dead code, bugs) instead of fixing them silently
+- Remove only what your own change made unused
+- Check: every changed line traces back to the request
+
+**Turn the task into a check that can pass or fail.**
+
+- "Fix the bug" → a test that reproduces it, then make it pass; "add X" → the observable behaviour that proves X
+- For multi-step work, state the plan with a check per step and loop until each check passes
+- Never report done on "it should work" — report the check and its result
 
 **NEVER hardcode secrets.**
 

@@ -32,6 +32,10 @@ const [url, out, probePath] = process.argv.slice(2);
     fs.writeFileSync(`${out}/screen-${width}-${scheme}.json`, JSON.stringify(result, null, 1));
     await page.close();
   }
+  // one extra pass with reduced motion: anything still animating endlessly is a MOTION fail
+  const rm = await browser.newPage({ viewport: { width: 1440, height: 900 }, reducedMotion: "reduce" });
+  await rm.goto(url, { waitUntil: "networkidle" });
+  fs.writeFileSync(`${out}/screen-1440-reduced-motion.json`, JSON.stringify(await rm.evaluate(fs.readFileSync(probePath, "utf8")), null, 1));
   await browser.close();
 })();
 ```
@@ -61,7 +65,9 @@ text under 11px, font sizes/typefaces/weights in use, monospace outside code/seq
 table cells not right-aligned or not tabular, uppercase/tracked headers, zebra rows, gradients,
 shadows on resting panels, panel radii, form controls not inheriting the font, targets under 24px,
 chart hues (SVG marks only — canvas charts are not read), missing or oversized h1, sideways scroll,
-emoji and placeholder text, `var()` names unresolved at `:root` in this theme.
+emoji and placeholder text, `var()` names unresolved at `:root` in this theme, endless animations
+(more than two, or any under reduced motion), charts without a text equivalent (no accessible
+name or caption), a dark page without `color-scheme: dark`, tables in different density tiers.
 
 Not measured: whether the hierarchy answers the screen's question, whether numbers agree, whether
 states are distinct, the phone composition — those are the written look in review.md §1. A clean

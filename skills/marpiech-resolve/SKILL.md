@@ -160,6 +160,9 @@ Present, in a few sentences plus one question:
    strings, not the literal title. Flag immediately if the work belongs to another
    repository or owner, or is already done.
 2. **Root cause / current state** — the mechanism of the bug, or what exists and the gap.
+   For a bug whose cause is not yet proven: IF `/marpiech-debug` is installed → run it
+   (frame, reproduce, shrink, prove) before proposing solutions; a solution to an
+   unproven cause is a guess.
 3. **The route** (default or another from the adapter) and why.
 4. **Exactly 3 solutions** as one question: label = what it does; description = its
    core trade-off (blast radius · reuse · effort). Recommended first. IF only two real
@@ -229,7 +232,10 @@ After the last round: final plan → exit plan mode → approval.
 IF `/marpiech-audit` is installed → run it scoped to the touched components; ELSE
 `/code-review` on the diff. Fix findings caused by this ticket; note pre-existing ones.
 IF the change touches templates, components or CSS AND `/marpiech-uidesign` is installed →
-also run its REVIEW on the diff (static checks + render check). Skip for trivial changes.
+also run its REVIEW on the diff (static checks + render check). IF the change touches
+authentication, permissions, sessions, crypto, file handling, rendering of user data, CI
+workflows or dependency manifests AND `/marpiech-security` is installed → also run its DIFF
+review. Skip for trivial changes.
 
 ## Phase 7.5 — Second opinion (optional)
 
@@ -366,7 +372,7 @@ Example for a fictional project:
 ## UI
 - ui-verification: `npm run shot -- <url>` logs in as the e2e "reviewer" role, saves PNG
 - ui-rules: acme-ui components only (Button, DataTable, Card); semantic CSS variables only
-- consult-skills: acme-ui-debug for template/CSS work
+- consult-skills: acme-uidesign for template/CSS work, /marpiech-debug for failing jobs
 
 ## Packages
 - cli/ → PyPI package `acme-cli` (use /marpiech-release-python)

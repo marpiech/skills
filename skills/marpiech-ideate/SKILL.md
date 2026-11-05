@@ -160,6 +160,15 @@ Write one message the user can react to:
 6. Skip low-value meta questions ("more questions or done?").
 7. Where you choose a default yourself, list it under "Defaults I chose (open to
    correction)".
+8. **Questions the user cannot answer belong to someone else.** IF an answer needs a
+   person outside the session (a clinician, a lab, legal, a customer, another team) →
+   do not guess and do not block: write a **questionnaire** for that person from
+   `templates/QUESTIONNAIRE.template.md` into the prototype directory — each question
+   self-contained (context in two lines, why it matters, the options with their
+   consequence, a recommended default), numbered `Q<n>`, in that person's vocabulary, no
+   internal jargon. Record each question in `DECISIONS.md` as `open — awaiting <role>`
+   with the default the spec uses meanwhile, and tell the user who should receive it.
+   When the answers come back, apply them as a normal round (rule 5: reconcile).
 
 **Decision log** — after every round update `DECISIONS.md`: numbered rows
 `# | Area | Decision | Round | Source (user / default / research)`. Supersede rows
@@ -298,6 +307,9 @@ Example for a fictional project:
 Generic learnings, newest first. Project-specific learnings go to the project's adapter.
 When a learning changes a phase, edit the phase too.
 
+- 2026-11-05 — alignment rule 8: decisions only an outside person can make go into a
+  self-contained questionnaire (context, why it matters, options with consequences, a
+  default) instead of being guessed; idea taken from popular "to-questionnaire" skills.
 - 2026-11-03 — initial generic version, distilled from three ideation sessions in a
   production product team. What they taught:
   - a v1 built from loose ideas was rejected wholesale; a v2 built from a written spec

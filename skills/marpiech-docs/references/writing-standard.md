@@ -96,6 +96,26 @@ gated on it.
 `--british`) British spellings. Every hit is advisory: a clear 27-word sentence can
 stay; a 19-word sentence with three clauses should not.
 
+### Part 2b — Prose that reads as generated (remove it)
+
+Readers stop trusting a page once it sounds machine-written, even when the facts are
+right. `docs-check.py style` flags the stock phrases (`SLOP`: "delve", "plays a crucial
+role", "in today's fast-paced…", "not just X, but Y", "let's dive in"); the structural
+patterns below need a read:
+
+| pattern | fix |
+|---------|-----|
+| an opening sentence that restates the title or sells the feature | start with what the reader can do or must know |
+| a closing "In summary / Overall / In conclusion" paragraph that repeats the page | delete it; end with the last step or "See also" |
+| reflexive lists of three ("fast, reliable and secure") | keep only the items that are true and specific |
+| "This isn't X — it's Y" and other contrast-for-drama constructions | state Y |
+| stacked hedges ("may potentially help to") | one qualifier, or none |
+| every bullet opening with a bold label and a colon | use plain bullets unless the label is a real term the reader scans for |
+| frequent em-dashes and parenthetical asides | split into sentences |
+| rhetorical questions as headings or openers | a heading names the task ("Export a report") |
+| emoji in headings, decorative symbols | remove |
+| praise of the reader or the product ("great question", "powerful") | remove |
+
 ---
 
 ## Part 3 — House-style consistency
@@ -138,4 +158,5 @@ docs tree, not only your page.
 - [ ] No CLI/API content on UI pages (and vice versa).
 - [ ] Screenshots current, from the demo persona, no real data, no admin indicators.
 - [ ] "See also" with 3–5 existing targets; page listed in the nav.
+- [ ] No stock phrases or generated-prose patterns (Part 2b).
 - [ ] `docs-check.py links`, `nav`, `style` run; hits read and judged.

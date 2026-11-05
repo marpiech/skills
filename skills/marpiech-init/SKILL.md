@@ -269,6 +269,12 @@ intentionally omitted" in the adapter so SYNC/AUDIT do not re-propose them.
 Generic learnings about this skill, newest first. Project-specific learnings go to the
 project's adapter, never here. When a learning changes a step, edit the step too.
 
+- 2026-11-05 — the template's Behavioral Rules gained three widely adopted agent rules
+  (popularised as a one-file "coding guidelines" CLAUDE.md): simplest change that solves
+  it, surgical changes (every changed line traces to the request), and turning the task
+  into a check that can pass or fail; "Ask, don't guess" now also says to state
+  assumptions and name competing readings. Offer them like the other template rules.
+
 - 2026-10-21 — first real audit: deep docs quote regexes such as `[a-z]([-a-z0-9]*)` that
   look like markdown links; the link checker now strips fenced blocks and inline code
   before extracting links. Treat any DEAD-LINK whose target is not a path as a checker bug.

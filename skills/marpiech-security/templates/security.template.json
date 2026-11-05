@@ -1,0 +1,8 @@
+{
+  "_comment": "Helper config for /marpiech-security (scripts/security.py). Paths only, never secrets. Every allow entry needs a one-line reason in the adapter.",
+  "exclude": ["docs/", "examples/"],
+  "allow": {
+    "D-BIND-ALL": ["services/*/main.py"],
+    "D-DEBUG": ["docker-compose.dev.yml"]
+  }
+}

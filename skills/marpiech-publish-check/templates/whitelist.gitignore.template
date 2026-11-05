@@ -1,0 +1,23 @@
+# Whitelist .gitignore: everything is private unless re-included below.
+# A new file stays unpublished until someone decides otherwise (fails safe).
+/*
+!/.gitignore
+!/README.md
+!/LICENSE
+!/src/
+!/docs/
+
+# Never publish these, even inside re-included directories
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*credentials*.json
+*service-account*.json
+*.tfstate*
+CLAUDE.local.md
+.claude/settings.local.json
+__pycache__/
+*.pyc
+.DS_Store

@@ -101,9 +101,12 @@ block contains:
    | SESSION START | /marpiech-memory (read) | always, before non-trivial work |
    | PLAN | /marpiech-myplan | new features, cross-cutting changes |
    | IMPLEMENT | /marpiech-resolve <TICKET> | ticket-driven work, end to end |
+   | ANYTIME | /marpiech-debug | any bug, regression or failed job — root cause before fix |
+   | REVIEW / MERGE | /marpiech-security (diff) | changes to auth, permissions, CI, dependencies |
    | REVIEW / MERGE | /marpiech-merge-pr <PR> | before anything reaches a deploy branch |
+   | OBSERVE / DELIVER | /marpiech-publish-check | before anything becomes public |
    | OBSERVE | /marpiech-observe-ci | after every push that should deploy |
-   | SESSION END | /marpiech-memory (update) | always, after non-trivial work |
+   | SESSION END | /marpiech-memory (update, or handoff if unfinished) | always, after non-trivial work |
    ```
 
    Only installed skills appear. Phases without a skill are omitted.

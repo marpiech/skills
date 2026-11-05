@@ -167,7 +167,8 @@ the plain-language rules this mode enforces.
 5. **Verify every factual claim** (route, flag, role, status name, limit, file path)
    with a grep in the code before keeping it. A short page of verified facts beats a
    long page of plausible fiction.
-6. **Self-review** against the checklist at the end of `references/writing-standard.md`,
+6. **Self-review** against the checklist at the end of `references/writing-standard.md`
+   and its Part 2b (prose that reads as generated — reread the page once only for that),
    then run D on the touched pages.
 7. **Commit** with explicit paths only (`git add <page> <nav file>`), never `git add -A`
    in a co-edited docs repo. IF a commit clobbered someone's change → `git revert` it at
@@ -273,6 +274,10 @@ Example for a fictional project:
 
 Generic learnings, newest first. Project-specific learnings go to the project's adapter.
 
+- 2026-11-05 — prose lint gained a SLOP rule (stock phrases typical of generated text)
+  and writing-standard Part 2b lists the structural tells that need a read (summary
+  closers, reflexive triples, contrast-for-drama, bold-label bullets, emoji headings);
+  distilled from popular "humanizer" / "stop-slop" writing skills, re-expressed.
 - 2026-11-03 — initial generic version, distilled from a production team's internal-docs
   skill and its customer-docs authoring skill (review lessons from many reviewed pages).
   The checker skips agent files (CLAUDE.md, MEMORY.md) in impact and nav results, and

@@ -82,10 +82,14 @@ URL, or empty (the PR of the current branch).
    `git fetch origin pull/<N>/head:pr-<N> && git worktree add <scratch>/pr-<N> pr-<N>`,
    run the adapter's test command there, then `git worktree remove <scratch>/pr-<N>`
    and `git branch -D pr-<N>`. Never stash or check out over the user's working tree.
-5. **Dependency-bump PRs** (bots): check each bumped package's changelog for breaking
+5. **Security-sensitive PRs** (auth, permissions, sessions, crypto, file handling,
+   rendering of user data, CI workflows, dependency manifests): IF `/marpiech-security` is
+   installed → run its DIFF review against the PR's merge-base; its CONFIRMED findings
+   are Blockers, PLAUSIBLE ones Questions.
+6. **Dependency-bump PRs** (bots): check each bumped package's changelog for breaking
    changes on major versions; for CI actions prefer pinned commit SHAs; confirm CI ran
    the changed workflows.
-6. **Documentation impact**: the `pr-facts` section. Each OPEN rule becomes a
+7. **Documentation impact**: the `pr-facts` section. Each OPEN rule becomes a
    *Question*, never a Blocker: update docs in this PR, follow up separately (label
    `docs-followup`), or skip (label `docs:skip`)?
 

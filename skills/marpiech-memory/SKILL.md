@@ -1,6 +1,6 @@
 ---
 name: marpiech-memory
-description: Grep-based, markdown-only project memory — plain MEMORY.md files committed next to the code they describe (no RAG, no embeddings, no vector DB), holding decisions, rationale, gotchas and rejected alternatives that live nowhere else. Use it at the START of almost every session (read mode) and at the END of any non-trivial work (update mode). Also trigger — even when the word "memory" is never said — when the user asks "why is X like this", "did we decide…", "do we have notes on…", resumes earlier work, asks to set up project memory, or before any non-trivial change that could repeat a settled mistake. Trigger on "/marpiech-memory", "check memory", "update memory", "remember this for the repo", "init memory".
+description: Grep-based, markdown-only project memory — plain MEMORY.md files committed next to the code they describe (no RAG, no embeddings, no vector DB), holding decisions, rationale, gotchas and rejected alternatives that live nowhere else. Use it at the START of almost every session (read mode) and at the END of any non-trivial work (update mode). Also trigger — even when the word "memory" is never said — when the user asks "why is X like this", "did we decide…", "do we have notes on…", resumes earlier work, asks to set up project memory, or before any non-trivial change that could repeat a settled mistake. Trigger on "/marpiech-memory", "check memory", "update memory", "remember this for the repo", "init memory"; and on "handoff", "write a handoff", "continue this in a new session", or when the context is nearly full with work unfinished (HANDOFF mode: a short uncommitted note with state and the next step).
 ---
 
 # marpiech-memory — grep-based repo memory
@@ -21,6 +21,7 @@ The skill has three **modes**. Pick the mode in Step 2.
 | **READ** | session start; before any non-trivial change; "why is X like this?" | seconds |
 | **UPDATE** | end of non-trivial work; user says "remember this" | 2 minutes |
 | **INIT** | the project has no memory system yet | 5–10 minutes, once |
+| **HANDOFF** | work is unfinished and a fresh session or another agent will continue it | 2 minutes |
 
 Throughout, `<SKILL_DIR>` means the directory containing this SKILL.md, and
 `<MEM>` means the memory file name (default `MEMORY.md`). Run scripts from the
@@ -60,6 +61,9 @@ repository root.
 IF the root index does not exist AND no <MEM> files exist anywhere
    → INIT mode (ask the user first: "This repo has no memory system — set one up?")
      IF the user declines → stop the skill; mention it once, never again this session.
+ELSE IF the user said "handoff", "hand this over", "continue in a new session",
+        "write a handoff", OR the context is nearly full with the task unfinished
+   → HANDOFF mode (it runs UPDATE first for anything durable)
 ELSE IF the session is ending, a task just finished, or the user said
         "update memory" / "remember this"
    → UPDATE mode
@@ -67,7 +71,8 @@ ELSE
    → READ mode
 ```
 
-A single session normally runs READ at the start and UPDATE at the end.
+A single session normally runs READ at the start and UPDATE at the end. READ also
+looks for an unconsumed handoff note (HANDOFF step 6) and offers to resume from it.
 
 ---
 
@@ -201,6 +206,47 @@ Goal: give a repository a working memory system and wire it into its CLAUDE.md.
 
 ---
 
+## HANDOFF mode
+
+Goal: let a fresh session (or another agent, or a teammate) continue unfinished work in
+minutes, without re-reading the whole conversation — while keeping in-flight state out of
+the committed memory (memory holds durable *why*; a handoff holds temporary *where we are*).
+
+1. **Durable first.** Run UPDATE mode for every learning that will still matter after
+   the task is done (decisions, gotchas, rejected paths). The handoff links to those
+   memory files; it never duplicates them.
+2. **Choose the location** — adapter `handoff-dir`, default `.claude/handoff/`.
+   Check it is ignored: `git check-ignore -q .claude/handoff/x.md`. IF it is NOT ignored →
+   ask the user once: add it to `.gitignore`, or write the note outside the repository
+   (the session scratch area or `~/.claude/handoff/<repo-name>/`). A handoff is never
+   committed: it goes stale within days and may name work in progress.
+3. **Write the note** `<handoff-dir>/<YYYY-MM-DD>-<topic>.md` from
+   `templates/HANDOFF.template.md`, at most ~60 lines:
+   - **Goal** — the task in one or two sentences, and the ticket/plan link if any;
+   - **State** — done (with commit ids), in progress (file:line, what is half-done),
+     not started;
+   - **Next step** — the very next concrete action, so the new session can start
+     without deciding anything;
+   - **Decisions this session** — one line each, linking the memory entry or decision
+     log that holds the reason;
+   - **Open questions** for the user, and assumptions made while waiting;
+   - **How to verify** — the commands that show the current state (tests, a URL to
+     look at), and what "done" looks like;
+   - **Do not** — paths already tried and rejected, files not to touch, user work in
+     progress that must not be overwritten;
+   - **Uncommitted changes** — `git status --short` summary and which of them are yours.
+   Never secrets, credentials, customer data, or pasted logs with either.
+4. **Show the user** the path and the "Next step" line; suggest how to resume
+   (`/marpiech-memory` in the new session, or "continue from <path>").
+5. Do not delete the conversation's own artefacts (plans, scratch files) the note links to.
+6. **Resume (from READ mode):** IF `<handoff-dir>` holds notes → list them newest first
+   with their Goal line and ask whether to resume one. On resume: read the note, verify
+   its "State" against `git log` / `git status` (the world may have moved), report any
+   drift, then continue from "Next step". When the task is finished → delete the note
+   (or move it to `<handoff-dir>/done/` if the adapter says to keep them).
+
+---
+
 ## Rules & guardrails
 
 - Memory is **committed and shared**. Never write secrets, tokens, passwords,
@@ -233,6 +279,7 @@ The skill works with zero configuration. Adapt it when the defaults do not fit.
 | `commit-policy` | `same-commit-as-code` | `separate-commit` if reviewers want memory diffs isolated; `never-commit` only for private experiments |
 | `extra-exclude-dirs` | common build/vendor dirs | add generated or vendored trees that may contain stray `MEMORY.md` |
 | other knowledge stores | CLAUDE.md | list your docs/ADR/todo locations so memory links rather than copies |
+| `handoff-dir` | `.claude/handoff/` (must be gitignored) | any ignored directory; outside the repo if nothing suitable is ignored |
 
 **2. Where the adapter lives:** `<project>/.claude/adapters/marpiech-memory.md`,
 committed with the project. Template: `templates/adapter.template.md`.
@@ -248,6 +295,7 @@ committed with the project. Template: `templates/adapter.template.md`.
 - stale-days: 60
 - ticket-prefix: ACME
 - commit-policy: same-commit-as-code
+- handoff-dir: .claude/handoff/   (gitignored)
 - extra-exclude-dirs: frontend/node_modules, infra/.terraform
 
 ## Other knowledge stores in this repo
@@ -283,6 +331,8 @@ Paste into the project's CLAUDE.md (or let `marpiech-init` place it):
 - SESSION END / TASK DONE: run `/marpiech-memory` (update mode) — record decisions,
   gotchas, rejected paths; stamp; add index lines; commit with the code change.
 - Memory holds only what has no other home. Never secrets or personal data.
+- UNFINISHED WORK at session end or near a full context: `/marpiech-memory handoff` —
+  a short, uncommitted note (state, next step, open questions) the next session resumes from.
 ```
 
 ---
@@ -291,6 +341,10 @@ Paste into the project's CLAUDE.md (or let `marpiech-init` place it):
 
 Generic learnings about this skill, newest first. Project-specific learnings go to the
 project's adapter, never here. When a learning changes a step, edit the step too.
+
+- 2026-11-05 — HANDOFF mode added (inspired by popular "handoff" session-compaction
+  skills): durable learnings still go to memory via UPDATE; the in-flight state goes to a
+  short, gitignored note with one concrete next step, verified against git on resume.
 
 - 2026-10-20 — initial generic version, distilled from a production repo that ran
   this protocol across ~30 memory files; the thin index + hooks-name-the-surprise rule
